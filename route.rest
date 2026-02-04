@@ -1,0 +1,307 @@
+# API Tasks - Tests des Endpoints
+# Utilisez l'extension REST Client de VS Code pour exécuter ces requêtes
+# L'API doit tourner sur http://localhost:8000
+
+@baseUrl = http://localhost:8000
+@authToken = Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NzAxODc2MjAsImV4cCI6MTc3MDE5MTIyMCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoidGVzdEBtYWlsLmNvbSJ9.Gl0wXQ-FZAmnWC-sh31my0XJgsf2yf1SE2XbyEADRRnRTWCeh-PPsm_NzMSr9Jl9wLelHwUqeVPs25VstXdr1cR7SzWGzbGEKo6ac8FaKLB_4bZEn1FxbybyQg9LfNIXyJC9aMqYuG6l-Fb5smhwLPejxhZcW2ERg0aJhDKwzJ-Lxx8df1MnDg9VKDTy4THfNnHT9uYNkVWdYX0IT4PyLkGalRMZCK2H22eeDl5hLoYFkFZC6R_Go4CsfzPhRfdyYKKEBjCrheYPq99xBXb3hjSoqW03I9uBLOE4SrrJjch_dF9qVjFOv_wnxWKwIbfIolwsCrQJhN-7Fk-KYrVrIZ8qJ0QZDYTfpFGhKxdZx8uKTcaUPRWQOPXv3PyTtNkpfcRxiJvmzh71kGdL2my_S9pKHSBFa6e16Sd0GMAXGacnFtiyUEZ-atCL4jadDOeMBVINdVnmoEjZqEg8NrwrloZPMkdyViC8TyYJUVI7D_QY40tUenOIcYukZiV_M8hJqk0-sgvPfWJzRG-HbYjw4pirdkADrODaWQ20phX5Mi7nZJjd7IDAY5hvvTGqj2wTzckAqJpN_bzb4RjuO8KyIdDRRrMPuJpss3Ltk3Tc6fvZ01cebN8NTbvGqjOY-uDkEFxF_pUayZwrPZX9zMkubrsiea9nsMkPZOdTIu2CvYs
+
+# 📝 NOTE: Pour utiliser les routes protégées, exécutez d'abord la requête "LOGIN - Obtenir le JWT"
+# Copiez le token retourné et remplacez la valeur de @authToken ci-dessus
+
+### ============================================================================
+### AUTHENTIFICATION (Routes Publiques - Sans Token)
+### ============================================================================
+
+### AUTH 1. USER - Créer un nouvel utilisateur (Inscription)
+POST {{baseUrl}}/api/user
+Content-Type: application/json
+
+{
+  "email": "test@mail.com",
+  "password": "passer"
+}
+
+###
+
+### AUTH 2. LOGIN - Obtenir le JWT Token
+# ⚠️  COPIEZ LE TOKEN RETOURNÉ ET METTEZ À JOUR LA VARIABLE @authToken AU DÉBUT DU FICHIER
+POST {{baseUrl}}/api/login_check
+Content-Type: application/json
+
+{
+  "email": "test@mail.com",
+  "password": "passer"
+}
+
+###
+
+### ============================================================================
+### ENDPOINTS DOCTRINE ORM (Version normale) - ROUTES PROTÉGÉES ✅ AVEC TOKEN
+### ============================================================================
+
+### 1. GET /api/tasks - Lister toutes les tâches
+GET {{baseUrl}}/api/tasks
+Authorization: {{authToken}}
+
+###
+
+### 2. GET /api/tasks avec filtres (status et search)
+GET {{baseUrl}}/api/tasks?status=pending&search=configurer
+Authorization: {{authToken}}
+
+###
+
+### 3. GET /api/tasks/{id} - Récupérer une tâche par ID
+GET {{baseUrl}}/api/tasks/1
+Authorization: {{authToken}}
+
+###
+
+### 4. POST /api/tasks - Créer une nouvelle tâche
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "Nouvelle tâche de test",
+  "description": "Description de la tâche créée via REST Client",
+  "status": "pending",
+  "dueDate": "2026-02-15"
+}
+
+###
+
+### 5. PUT /api/tasks/{id} - Modifier une tâche existante
+PUT {{baseUrl}}/api/tasks/1
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "Tâche modifiée",
+  "description": "Description mise à jour",
+  "status": "in_progress",
+  "dueDate": "2026-02-20"
+}
+
+###
+
+### 6. DELETE /api/tasks/{id} - Supprimer une tâche
+DELETE {{baseUrl}}/api/tasks/1
+Authorization: {{authToken}}
+
+###
+
+### ============================================================================
+### ENDPOINTS RAW SQL (Version pour démontrer les compétences SQL) - ROUTES PROTÉGÉES ✅ AVEC TOKEN
+### ============================================================================
+
+### 7. GET /api/tasks/raw - Lister toutes les tâches (SQL brut)
+GET {{baseUrl}}/api/tasks/raw
+Authorization: {{authToken}}
+
+###
+
+### 8. GET /api/tasks/raw avec filtres
+GET {{baseUrl}}/api/tasks/raw?status=completed&search=fixture
+Authorization: {{authToken}}
+
+###
+
+### 9. GET /api/tasks/raw/{id} - Récupérer une tâche par ID (SQL brut)
+GET {{baseUrl}}/api/tasks/raw/2
+Authorization: {{authToken}}
+
+###
+
+### 10. POST /api/tasks/raw - Créer une tâche (SQL brut)
+POST {{baseUrl}}/api/tasks/raw
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "Tâche créée avec SQL brut",
+  "description": "Cette tâche utilise INSERT SQL direct",
+  "status": "pending",
+  "dueDate": "2026-03-01"
+}
+
+###
+
+### 11. PUT /api/tasks/raw/{id} - Modifier une tâche (SQL brut)
+PUT {{baseUrl}}/api/tasks/raw/2
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "Tâche modifiée avec SQL brut",
+  "description": "UPDATE SQL direct",
+  "status": "completed",
+  "dueDate": "2026-02-25"
+}
+
+###
+
+### 12. DELETE /api/tasks/raw/{id} - Supprimer une tâche (SQL brut)
+DELETE {{baseUrl}}/api/tasks/raw/2
+Authorization: {{authToken}}
+
+###
+
+### ============================================================================
+### ENDPOINTS STATISTIQUES ET RECHERCHE - ROUTES PROTÉGÉES ✅ AVEC TOKEN
+### ============================================================================
+
+### 13. GET /api/tasks/stats - Statistiques des tâches
+GET {{baseUrl}}/api/tasks/stats
+Authorization: {{authToken}}
+
+###
+
+### 14. GET /api/tasks/search - Recherche avancée
+GET {{baseUrl}}/api/tasks/search?q=developpement&status=completed
+Authorization: {{authToken}}
+
+###
+
+### ============================================================================
+### TESTS D'ERREURS ET EDGE CASES - ROUTES PROTÉGÉES ✅ AVEC TOKEN
+### ============================================================================
+
+### 15. GET tâche inexistante (Doit retourner 404)
+GET {{baseUrl}}/api/tasks/999
+Authorization: {{authToken}}
+
+###
+
+### 16. PUT tâche inexistante (Doit retourner 404)
+PUT {{baseUrl}}/api/tasks/999
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "Tâche qui n'existe pas",
+  "status": "pending"
+}
+
+###
+
+### 17. POST avec données invalides (Validation)
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "",
+  "status": "invalid_status"
+}
+
+###
+
+### 18. DELETE tâche inexistante (Doit retourner 404)
+DELETE {{baseUrl}}/api/tasks/999
+Authorization: {{authToken}}
+
+###
+
+### ============================================================================
+### EXEMPLES DE DONNÉES JSON POUR LES TESTS - ROUTES PROTÉGÉES ✅ AVEC TOKEN
+### ============================================================================
+
+### Créer une tâche "pending"
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "Tâche en attente",
+  "description": "Cette tâche est en attente de traitement",
+  "status": "pending"
+}
+
+###
+
+### Créer une tâche "in_progress"
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "Tâche en cours",
+  "description": "Cette tâche est actuellement en cours de réalisation",
+  "status": "in_progress",
+  "dueDate": "2026-02-10"
+}
+
+###
+
+### Créer une tâche "completed"
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "title": "Tâche terminée",
+  "description": "Cette tâche a été finalisée avec succès",
+  "status": "completed",
+  "dueDate": "2026-01-30"
+}
+
+###
+
+### ============================================================================
+### TESTS DE PERFORMANCE (optionnel)
+### ============================================================================
+
+### 20. Test de charge - Créer plusieurs tâches
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Tâche de performance 1",
+  "description": "Test de performance",
+  "status": "pending"
+}
+
+###
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Tâche de performance 2",
+  "description": "Test de performance",
+  "status": "pending"
+}
+
+###
+POST {{baseUrl}}/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Tâche de performance 3",
+  "description": "Test de performance",
+  "status": "pending"
+}
+
+###
+
+### 21. Lister après création massive
+GET {{baseUrl}}/api/tasks
+
+###
+POST http://127.0.0.1:8000/api/user
+content-type: application/json
+
+{
+  "email" : "admi@mail.com",
+  "password" : "passer"
+}
+
+
+###
+POST http://127.0.0.1:8000/api/login_check
+Content-Type: application/json
+
+{
+  "email": "test@mail.com",
+  "password": "passer"
+}
