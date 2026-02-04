@@ -14,15 +14,25 @@ Les étudiants apprendront à :
 
 app/
 ├─ api.ts
+
 ├─ components/
+
 │ ├─ TaskList.tsx
+
 │ └─ TaskForm.tsx
+
 ├─ pages/
+
 │ └─ TasksPage.tsx
+
 ├─ routes/
+
 │ ├─ home.tsx
+
 │ └─ tasks.tsx
+
 ├─ routes.ts
+
 └─ root.tsx
 
 
